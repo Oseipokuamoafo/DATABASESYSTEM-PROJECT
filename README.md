@@ -101,10 +101,10 @@ This project implements a comprehensive grade book database system for universit
 **Explanation:** Dynamically adds assignments to existing categories.
 
 ### Test Case 5: Update Weights
-**Input:** Course ID = 1, Change Participation to 15%, adjust Tests to 85%  
+**Input:** Course ID = 1, shift 5% from Participation (10→5%) to Homework (20→25%)  
 **Query:** See queries.sql section e)  
-**Expected Output:** Category weights updated, total = 100%  
-**Explanation:** Maintains grade weighting integrity.
+**Expected Output:** Participation=5, Homework=25, Tests=50, Projects=20 — total = 100%  
+**Explanation:** Demonstrates that category weights can be redistributed while keeping the sum at 100%.
 
 ### Test Case 6: Add Points to All
 **Input:** Assignment ID for 'Homework 1', Points = 2  
@@ -125,10 +125,16 @@ This project implements a comprehensive grade book database system for universit
 **Explanation:** Weighted average across all categories.
 
 ### Test Case 9: Compute Grade with Drop
-**Input:** Student ID = 1, Course ID = 1, Drop from 'Homework'  
+**Input:** Student ID = 1 (Alice Smith), Course ID = 1  
 **Query:** See queries.sql section i)  
-**Expected Output:** Final grade ≈ 88.0% (higher due to dropped lowest homework)  
-**Explanation:** Advanced grading policy with score dropping.
+**Expected Output:** 90.9 — the lowest assignment in *each* category is dropped:
+- Participation: drop 8/10, keep 9/10 → 9.0 pts
+- Homework: drop 17/20, keep 18 & 19 → 18.5 pts
+- Tests: drop 82/100, keep 90/100 → 45.0 pts
+- Projects: drop 88/100, keep 92/100 → 18.4 pts
+
+**Python variant** (`compute_student_grade_drop_lowest(..., 'Homework')`): drops lowest only in the named category → 88.0%  
+**Explanation:** Demonstrates two drop-lowest policies: per-category SQL and targeted Python.
 
 ## Files Structure
 - `schema.sql`: Database schema creation
